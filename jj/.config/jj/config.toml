@@ -4,6 +4,7 @@
 cm = ["commit"]
 init = ["git", "init", "--colocate"]
 adv = ["bookmark", "set", "-r", "@-"]
+push = ["git", "push", "--bookmark"]
 
 [user]
 name = "csepulveda-dev"
