@@ -1,0 +1,39 @@
+<<<<<<< Conflict 1 of 1
++++++++ Contents of side #1
+.aider*
+.config/raycast/extensions/*
+.config/raycast/ai/*
+.gitconfig
+# Exclude potential sensitive environment files
+.env*
+.*.env
+# Exclude SSH keys and related files
+.*.ssh/*
+# Exclude temporary or cache files
+*.tmp
+*.swp
+*.log*
+*.db
+.aider*
+.config/raycast/extensions/*
+.config/raycast/ai/*
+.gitconfig
+# Exclude potential sensitive environment files
+.env*
+.*.env
+# Exclude SSH keys and related files
+.*.ssh/*
+# Exclude temporary or cache files
+*.tmp
+*.swp
+*.log*
+*.db
+.aider*
+.aider*
+.DS_Store
+%%%%%%% Changes from base to side #2
++.aider*
++.config/raycast/extensions/*
++.config/raycast/ai/*
+>>>>>>> Conflict 1 of 1 ends
+fish_variables

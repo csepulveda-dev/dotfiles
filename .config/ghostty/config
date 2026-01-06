@@ -1,0 +1,4 @@
+command = /opt/homebrew/bin/fish
+theme = catppuccin-mocha
+font-size = 20
+
