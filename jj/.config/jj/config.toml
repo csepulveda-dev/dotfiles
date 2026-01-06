@@ -1,5 +1,10 @@
 #:schema https://docs.jj-vcs.dev/latest/config-schema.json
 
+[aliases]
+cm = ["commit"]
+init = ["git", "init", "--colocate"]
+adv = ["bookmark", "set", "-r", "@-"]
+
 [user]
 name = "csepulveda-dev"
 email = "dev@camilosep.com"

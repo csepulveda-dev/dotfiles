@@ -1,5 +1,5 @@
 command = /opt/homebrew/bin/fish
-theme = catppuccin-mocha
+theme = Catppuccin Mocha
 font-size = 20
 keybind = cmd+s=new_split:down
 keybind = cmd+a=new_split:left
