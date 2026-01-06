@@ -6,3 +6,4 @@ keybind = cmd+a=new_split:left
 keybind = cmd+d=new_split:right
 keybind = cmd+alt+ctrl+shift+z=goto_split:previous
 keybind = cmd+alt+ctrl+shift+x=goto_split:next
+custom-shader = ~/.config/ghostty/shaders/matrix-hallway.glsl
