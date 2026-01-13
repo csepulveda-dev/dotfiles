@@ -8,7 +8,7 @@ const float threshold = 0.15;
 const float repeats = 30.;
 
 // number of layers
-const float layers = 21.;
+const float layers = 10.;
 
 // star colors
 const vec3 white = vec3(1.0); // Set star color to pure white
