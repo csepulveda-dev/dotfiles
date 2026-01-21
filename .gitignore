@@ -1,5 +1,3 @@
-<<<<<<< Conflict 1 of 1
-+++++++ Contents of side #1
 .aider*
 .config/raycast/extensions/*
 .config/raycast/ai/*
@@ -31,9 +29,5 @@
 .aider*
 .aider*
 .DS_Store
-%%%%%%% Changes from base to side #2
-+.aider*
-+.config/raycast/extensions/*
-+.config/raycast/ai/*
->>>>>>> Conflict 1 of 1 ends
 fish_variables
+**/node_modules/
