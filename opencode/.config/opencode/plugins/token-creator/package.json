@@ -1,0 +1,20 @@
+{
+  "name": "opencode-token-creator",
+  "version": "1.0.0",
+  "description": "OpenCode plugin to create a new resource token prefix by registering it in protobuf definitions, generating Kotlin token classes, and running tests.",
+  "main": "index.ts",
+  "type": "module",
+  "keywords": [
+    "opencode",
+    "plugin",
+    "token",
+    "protobuf",
+    "kotlin",
+    "gradle"
+  ],
+  "author": "Generated from Claude Skills",
+  "license": "MIT",
+  "peerDependencies": {
+    "@opencode-ai/plugin": "^1.0.0"
+  }
+}

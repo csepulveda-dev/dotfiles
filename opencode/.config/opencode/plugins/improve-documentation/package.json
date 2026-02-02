@@ -1,0 +1,19 @@
+{
+  "name": "opencode-improve-documentation",
+  "version": "1.0.0",
+  "description": "OpenCode plugin to review local protobuf changes and improve documentation quality, ensuring field names and descriptions accurately reflect their purpose.",
+  "main": "index.ts",
+  "type": "module",
+  "keywords": [
+    "opencode",
+    "plugin",
+    "documentation",
+    "protobuf",
+    "git"
+  ],
+  "author": "Generated from Claude Skills",
+  "license": "MIT",
+  "peerDependencies": {
+    "@opencode-ai/plugin": "^1.0.0"
+  }
+}

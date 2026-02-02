@@ -1,0 +1,20 @@
+{
+  "name": "opencode-protobuf-new",
+  "version": "1.0.0",
+  "description": "OpenCode plugin to create new protobuf methods, messages, or services following best practices and verifying no duplication exists in existing definitions.",
+  "main": "index.ts",
+  "type": "module",
+  "keywords": [
+    "opencode",
+    "plugin",
+    "protobuf",
+    "grpc",
+    "services",
+    "messages"
+  ],
+  "author": "Generated from Claude Skills",
+  "license": "MIT",
+  "peerDependencies": {
+    "@opencode-ai/plugin": "^1.0.0"
+  }
+}
