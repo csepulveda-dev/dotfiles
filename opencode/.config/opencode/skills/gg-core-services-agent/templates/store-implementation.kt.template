@@ -1,0 +1,214 @@
+package {{STORE_PACKAGE}}
+
+import {{DOMAIN_PACKAGE}}.{{MODEL_NAME}}
+import {{DOMAIN_PACKAGE}}.new{{MODEL_NAME}}RetrievalError
+import {{DOMAIN_PACKAGE}}.new{{MODEL_NAME}}CreationError
+import {{DOMAIN_PACKAGE}}.new{{MODEL_NAME}}UpdateError
+import {{DOMAIN_PACKAGE}}.new{{MODEL_NAME}}DeletionError
+import {{STORE_PACKAGE}}.converters.{{MODEL_NAME}}Converter
+import com.glossgenius.core.applications.logs.Logger
+import com.glossgenius.core.libs.models.*
+import io.micronaut.context.annotation.Singleton
+import org.jooq.DSLContext
+import java.time.OffsetDateTime
+import java.util.*
+import {{JOOQ_IMPORTS}}
+
+/**
+ * {{MODEL_NAME}} store implementation with jOOQ database access.
+ */
+@Singleton
+class {{MODEL_NAME}}StoreImpl(
+    private val logger: Logger,
+    private val dsl: DSLContext,
+    private val converter: {{MODEL_NAME}}Converter,
+) : {{MODEL_NAME}}Store {
+    
+    override fun findByToken(token: {{TOKEN_TYPE}}): {{MODEL_NAME}}? {
+        return try {
+            logger.debug("Finding {{MODEL_VAR}} by token: {}", token.value)
+            
+            dsl.selectFrom({{TABLE_NAME}})
+                .where({{TABLE_NAME}}.TOKEN.eq(token.value))
+                .fetchOne()
+                ?.let { record ->
+                    converter.fromRecord(record)
+                }
+        } catch (exception: Exception) {
+            logger.error("Failed to find {{MODEL_VAR}} by token: {}", token.value, exception)
+            throw new{{MODEL_NAME}}RetrievalError(
+                message = "Failed to retrieve {{MODEL_VAR}}",
+                cause = exception,
+                token = token
+            )
+        }
+    }
+    
+    override fun findByTokens(tokens: List<{{TOKEN_TYPE}}>): List<{{MODEL_NAME}}> {
+        return try {
+            if (tokens.isEmpty()) return emptyList()
+            
+            logger.debug("Finding {{MODEL_VAR}}s by {} tokens", tokens.size)
+            
+            val tokenValues = tokens.map { it.value }
+            dsl.selectFrom({{TABLE_NAME}})
+                .where({{TABLE_NAME}}.TOKEN.`in`(tokenValues))
+                .fetch()
+                .map { record -> converter.fromRecord(record) }
+        } catch (exception: Exception) {
+            logger.error("Failed to find {{MODEL_VAR}}s by tokens", exception)
+            throw new{{MODEL_NAME}}RetrievalError(
+                message = "Failed to retrieve {{MODEL_VAR}}s by tokens",
+                cause = exception
+            )
+        }
+    }
+    
+    override fun findByBusinessToken(businessToken: BusinessToken): List<{{MODEL_NAME}}> {
+        return try {
+            logger.debug("Finding {{MODEL_VAR}}s by business token: {}", businessToken.value)
+            
+            dsl.selectFrom({{TABLE_NAME}})
+                .where({{TABLE_NAME}}.BUSINESS_TOKEN.eq(businessToken.value))
+                .fetch()
+                .map { record -> converter.fromRecord(record) }
+        } catch (exception: Exception) {
+            logger.error("Failed to find {{MODEL_VAR}}s by business token: {}", businessToken.value, exception)
+            throw new{{MODEL_NAME}}RetrievalError(
+                message = "Failed to retrieve {{MODEL_VAR}}s by business token",
+                cause = exception,
+                businessToken = businessToken
+            )
+        }
+    }
+    
+    {{#INCLUDE_GUID}}
+    override fun findByGuid(guid: UUID): {{MODEL_NAME}}? {
+        return try {
+            logger.debug("Finding {{MODEL_VAR}} by GUID: {}", guid)
+            
+            dsl.selectFrom({{TABLE_NAME}})
+                .where({{TABLE_NAME}}.GUID.eq(guid))
+                .fetchOne()
+                ?.let { record ->
+                    converter.fromRecord(record)
+                }
+        } catch (exception: Exception) {
+            logger.error("Failed to find {{MODEL_VAR}} by GUID: {}", guid, exception)
+            throw new{{MODEL_NAME}}RetrievalError(
+                message = "Failed to retrieve {{MODEL_VAR}} by GUID",
+                cause = exception,
+                guid = guid
+            )
+        }
+    }
+    
+    override fun findByGuids(guids: List<UUID>): List<{{MODEL_NAME}}> {
+        return try {
+            if (guids.isEmpty()) return emptyList()
+            
+            logger.debug("Finding {{MODEL_VAR}}s by {} GUIDs", guids.size)
+            
+            dsl.selectFrom({{TABLE_NAME}})
+                .where({{TABLE_NAME}}.GUID.`in`(guids))
+                .fetch()
+                .map { record -> converter.fromRecord(record) }
+        } catch (exception: Exception) {
+            logger.error("Failed to find {{MODEL_VAR}}s by GUIDs", exception)
+            throw new{{MODEL_NAME}}RetrievalError(
+                message = "Failed to retrieve {{MODEL_VAR}}s by GUIDs",
+                cause = exception
+            )
+        }
+    }
+    {{/INCLUDE_GUID}}
+    
+    override fun create({{MODEL_VAR}}: {{MODEL_NAME}}): {{MODEL_NAME}} {
+        return try {
+            logger.debug("Creating {{MODEL_VAR}} with business token: {}", {{MODEL_VAR}}.businessToken.value)
+            
+            val now = OffsetDateTime.now()
+            val {{MODEL_VAR}}WithTimestamps = {{MODEL_VAR}}.copy(
+                nullableToken = {{MODEL_VAR}}.nullableToken ?: {{TOKEN_TYPE}}.random(),
+                createdAt = now,
+                updatedAt = now
+            )
+            
+            val record = converter.toRecord({{MODEL_VAR}}WithTimestamps)
+            dsl.insertInto({{TABLE_NAME}})
+                .set(record)
+                .execute()
+            
+            logger.info("Created {{MODEL_VAR}} with token: {}", {{MODEL_VAR}}WithTimestamps.token.value)
+            {{MODEL_VAR}}WithTimestamps
+        } catch (exception: Exception) {
+            logger.error("Failed to create {{MODEL_VAR}}", exception)
+            throw new{{MODEL_NAME}}CreationError(
+                message = "Failed to create {{MODEL_VAR}}",
+                cause = exception,
+                {{MODEL_VAR}} = {{MODEL_VAR}}
+            )
+        }
+    }
+    
+    override fun update({{MODEL_VAR}}: {{MODEL_NAME}}): {{MODEL_NAME}} {
+        return try {
+            logger.debug("Updating {{MODEL_VAR}} with token: {}", {{MODEL_VAR}}.token.value)
+            
+            val {{MODEL_VAR}}WithTimestamp = {{MODEL_VAR}}.copy(updatedAt = OffsetDateTime.now())
+            val record = converter.toRecord({{MODEL_VAR}}WithTimestamp)
+            
+            val updated = dsl.update({{TABLE_NAME}})
+                .set(record)
+                .where({{TABLE_NAME}}.TOKEN.eq({{MODEL_VAR}}.token.value))
+                .execute()
+            
+            if (updated == 0) {
+                throw new{{MODEL_NAME}}UpdateError(
+                    message = "{{MODEL_NAME}} not found for update",
+                    token = {{MODEL_VAR}}.token
+                )
+            }
+            
+            logger.info("Updated {{MODEL_VAR}} with token: {}", {{MODEL_VAR}}.token.value)
+            {{MODEL_VAR}}WithTimestamp
+        } catch (exception: Exception) {
+            logger.error("Failed to update {{MODEL_VAR}} with token: {}", {{MODEL_VAR}}.token.value, exception)
+            throw new{{MODEL_NAME}}UpdateError(
+                message = "Failed to update {{MODEL_VAR}}",
+                cause = exception,
+                token = {{MODEL_VAR}}.token
+            )
+        }
+    }
+    
+    override fun delete(token: {{TOKEN_TYPE}}): Boolean {
+        return try {
+            logger.debug("Deleting {{MODEL_VAR}} with token: {}", token.value)
+            
+            val deleted = dsl.deleteFrom({{TABLE_NAME}})
+                .where({{TABLE_NAME}}.TOKEN.eq(token.value))
+                .execute()
+            
+            val wasDeleted = deleted > 0
+            if (wasDeleted) {
+                logger.info("Deleted {{MODEL_VAR}} with token: {}", token.value)
+            } else {
+                logger.warn("{{MODEL_NAME}} not found for deletion with token: {}", token.value)
+            }
+            
+            wasDeleted
+        } catch (exception: Exception) {
+            logger.error("Failed to delete {{MODEL_VAR}} with token: {}", token.value, exception)
+            throw new{{MODEL_NAME}}DeletionError(
+                message = "Failed to delete {{MODEL_VAR}}",
+                cause = exception,
+                token = token
+            )
+        }
+    }
+    
+    {{#CUSTOM_METHODS_IMPL}}
+    {{CUSTOM_METHODS_IMPL}}
+    {{/CUSTOM_METHODS_IMPL}}
+}

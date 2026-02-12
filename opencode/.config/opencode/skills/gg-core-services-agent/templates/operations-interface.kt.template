@@ -1,0 +1,33 @@
+package {{OPERATIONS_PACKAGE}}
+
+import {{DOMAIN_PACKAGE}}.{{MODEL_NAME}}
+import com.glossgenius.core.libs.models.*
+import java.util.*
+
+/**
+ * Business logic operations for {{MODEL_NAME}} entities.
+ */
+interface {{MODEL_NAME}}Operations {
+    
+    // Core business operations
+    fun get{{MODEL_NAME}}(token: {{TOKEN_TYPE}}): {{MODEL_NAME}}?
+    fun get{{MODEL_NAME}}s(businessToken: BusinessToken): List<{{MODEL_NAME}}>
+    
+    {{#INCLUDE_GUID}}
+    // Legacy support operations
+    fun get{{MODEL_NAME}}ByGuid(guid: UUID): {{MODEL_NAME}}?
+    {{/INCLUDE_GUID}}
+    
+    // Business workflow operations
+    fun create{{MODEL_NAME}}({{MODEL_VAR}}: {{MODEL_NAME}}): {{MODEL_NAME}}
+    fun update{{MODEL_NAME}}({{MODEL_VAR}}: {{MODEL_NAME}}): {{MODEL_NAME}}
+    fun delete{{MODEL_NAME}}(token: {{TOKEN_TYPE}}): Boolean
+    
+    {{#SERVICE_BUSINESS_METHODS}}
+    {{SERVICE_BUSINESS_METHODS}}
+    {{/SERVICE_BUSINESS_METHODS}}
+    
+    {{#CROSS_SERVICE_METHODS}}
+    {{CROSS_SERVICE_METHODS}}
+    {{/CROSS_SERVICE_METHODS}}
+}

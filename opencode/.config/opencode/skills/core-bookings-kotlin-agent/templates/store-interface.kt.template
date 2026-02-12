@@ -1,0 +1,37 @@
+package com.glossgenius.core.bookings.stores
+
+import com.glossgenius.core.bookings.models.{{MODEL_NAME}}
+import com.glossgenius.core.libs.models.*
+import java.util.*
+
+/**
+ * Store interface for {{MODEL_NAME}} entity following Core Bookings patterns.
+ * 
+ * Features:
+ * - Token-first API design with optional GUID support
+ * - ServiceException error handling
+ * - Multi-tenant business token support
+ * - Comprehensive CRUD operations
+ */
+interface {{MODEL_NAME}}Store {
+    
+    // Primary token-based methods
+    fun findByToken(token: {{TOKEN_TYPE}}): {{MODEL_NAME}}?
+    fun findByTokens(tokens: List<{{TOKEN_TYPE}}>): List<{{MODEL_NAME}}>
+    fun findByBusinessToken(businessToken: BusinessToken): List<{{MODEL_NAME}}>
+    
+    {{#INCLUDE_GUID}}
+    // Legacy GUID support methods
+    fun findByGuid(guid: UUID): {{MODEL_NAME}}?
+    fun findByGuids(guids: List<UUID>): List<{{MODEL_NAME}}>
+    {{/INCLUDE_GUID}}
+    
+    // CRUD operations
+    fun create({{MODEL_VAR}}: {{MODEL_NAME}}): {{MODEL_NAME}}
+    fun update({{MODEL_VAR}}: {{MODEL_NAME}}): {{MODEL_NAME}}
+    fun delete(token: {{TOKEN_TYPE}}): Boolean
+    
+    {{#CUSTOM_METHODS}}
+    {{CUSTOM_METHODS}}
+    {{/CUSTOM_METHODS}}
+}

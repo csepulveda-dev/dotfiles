@@ -1,0 +1,1 @@
+../.agents/commands/speckit.checklist.md

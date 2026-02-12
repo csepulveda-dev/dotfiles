@@ -1,0 +1,92 @@
+package {{CLIENT_PACKAGE}}
+
+import {{DOMAIN_PACKAGE}}.{{MODEL_NAME}}
+import {{DOMAIN_PACKAGE}}.new{{MODEL_NAME}}RetrievalError
+import {{CLIENT_PACKAGE}}.payloads.{{MODEL_NAME}}Response
+import {{CLIENT_PACKAGE}}.converters.{{MODEL_NAME}}Converter
+import com.glossgenius.core.applications.logs.Logger
+import com.glossgenius.core.libs.models.*
+import io.micronaut.context.annotation.Singleton
+import io.micronaut.http.HttpMethod
+import io.micronaut.http.client.HttpClient
+import java.util.*
+
+/**
+ * HTTP client for {{TARGET_SERVICE}} {{MODEL_NAME}} operations.
+ */
+@Singleton
+class {{TARGET_SERVICE_PASCAL}}{{MODEL_NAME}}Client(
+    private val logger: Logger,
+    private val httpClient: HttpClient,
+    private val converter: {{MODEL_NAME}}Converter,
+) {
+    
+    fun get{{MODEL_NAME}}(token: {{TOKEN_TYPE}}): {{MODEL_NAME}}? {
+        return try {
+            logger.debug("Fetching {{MODEL_VAR}} from {{TARGET_SERVICE}}: {}", token.value)
+            
+            val response = httpClient.toBlocking().retrieve(
+                HttpMethod.GET,
+                "/{{API_PATH}}/{{MODEL_VAR_PLURAL}}/${token.value}",
+                {{MODEL_NAME}}Response::class.java
+            )
+            
+            converter.fromApiResponse(response)
+        } catch (exception: Exception) {
+            logger.error("Failed to fetch {{MODEL_VAR}} from {{TARGET_SERVICE}}: {}", token.value, exception)
+            throw new{{MODEL_NAME}}RetrievalError(
+                message = "Failed to retrieve {{MODEL_VAR}} from {{TARGET_SERVICE}}",
+                cause = exception,
+                token = token
+            )
+        }
+    }
+    
+    {{#INCLUDE_GUID}}
+    fun get{{MODEL_NAME}}ByGuid(guid: UUID): {{MODEL_NAME}}? {
+        return try {
+            logger.debug("Fetching {{MODEL_VAR}} from {{TARGET_SERVICE}} by GUID: {}", guid)
+            
+            val response = httpClient.toBlocking().retrieve(
+                HttpMethod.GET,
+                "/{{API_PATH}}/{{MODEL_VAR_PLURAL}}/by-guid/${guid}",
+                {{MODEL_NAME}}Response::class.java
+            )
+            
+            converter.fromApiResponse(response)
+        } catch (exception: Exception) {
+            logger.error("Failed to fetch {{MODEL_VAR}} from {{TARGET_SERVICE}} by GUID: {}", guid, exception)
+            throw new{{MODEL_NAME}}RetrievalError(
+                message = "Failed to retrieve {{MODEL_VAR}} from {{TARGET_SERVICE}} by GUID",
+                cause = exception,
+                guid = guid
+            )
+        }
+    }
+    {{/INCLUDE_GUID}}
+    
+    fun get{{MODEL_NAME}}sByBusinessToken(businessToken: BusinessToken): List<{{MODEL_NAME}}> {
+        return try {
+            logger.debug("Fetching {{MODEL_VAR}}s from {{TARGET_SERVICE}} by business token: {}", businessToken.value)
+            
+            val responses = httpClient.toBlocking().retrieve(
+                HttpMethod.GET,
+                "/{{API_PATH}}/{{MODEL_VAR_PLURAL}}?business_token=${businessToken.value}",
+                Array<{{MODEL_NAME}}Response>::class.java
+            )
+            
+            responses.map { converter.fromApiResponse(it) }
+        } catch (exception: Exception) {
+            logger.error("Failed to fetch {{MODEL_VAR}}s from {{TARGET_SERVICE}} by business token: {}", businessToken.value, exception)
+            throw new{{MODEL_NAME}}RetrievalError(
+                message = "Failed to retrieve {{MODEL_VAR}}s from {{TARGET_SERVICE}} by business token",
+                cause = exception,
+                businessToken = businessToken
+            )
+        }
+    }
+    
+    {{#CUSTOM_CLIENT_METHODS}}
+    {{CUSTOM_CLIENT_METHODS}}
+    {{/CUSTOM_CLIENT_METHODS}}
+}

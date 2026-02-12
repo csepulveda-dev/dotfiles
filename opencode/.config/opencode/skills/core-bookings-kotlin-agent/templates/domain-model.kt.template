@@ -1,0 +1,52 @@
+package com.glossgenius.core.bookings.models.{{PACKAGE_GROUP}}
+
+import com.fasterxml.jackson.databind.PropertyNamingStrategies
+import com.fasterxml.jackson.databind.annotation.JsonNaming
+import com.glossgenius.core.libs.models.*
+import java.math.BigDecimal
+import java.time.OffsetDateTime
+import java.util.*
+
+/**
+ * {{DESCRIPTION}}
+ * 
+ * This domain model follows Core Bookings and GlossGenius conventions:
+ * - Token-first design with optional GUID support
+ * - Immutable collections only (List/Map, never Mutable)
+ * - OffsetDateTime for timezone-aware dates
+ * - Amount type for monetary values
+ * - Snake_case JSON serialization
+ */
+@JsonNaming(PropertyNamingStrategies.SnakeCaseStrategy::class)
+data class {{MODEL_NAME}}(
+    val nullableToken: {{TOKEN_TYPE}}? = null,    // Service-assigned
+    val businessToken: BusinessToken,             // Required multi-tenant
+    {{#INCLUDE_GUID}}
+    val guid: UUID? = null,                       // Legacy support
+    {{/INCLUDE_GUID}}
+    {{FIELDS}}
+    val createdAt: OffsetDateTime? = null,        // Audit timestamp
+    val updatedAt: OffsetDateTime? = null,        // Audit timestamp
+) {
+    val token: {{TOKEN_TYPE}}
+        get() = nullableToken!!  // Intentionally unsafe - fails fast
+    
+    val id: String
+        get() = token.value  // Primary identifier
+    
+    {{#COMPUTED_PROPERTIES}}
+    {{COMPUTED_PROPERTIES}}
+    {{/COMPUTED_PROPERTIES}}
+    
+    init {
+        {{#VALIDATIONS}}
+        {{VALIDATIONS}}
+        {{/VALIDATIONS}}
+    }
+}
+
+{{#COMPANION_OBJECT}}
+companion object {
+    {{COMPANION_OBJECT}}
+}
+{{/COMPANION_OBJECT}}

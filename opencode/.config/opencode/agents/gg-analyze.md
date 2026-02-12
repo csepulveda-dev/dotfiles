@@ -1,0 +1,1 @@
+../.agents/commands/gg-analyze.md

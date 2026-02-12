@@ -4,7 +4,47 @@
     "mastra": {
       "type": "local",
       "command": ["npx", "-y", "@mastra/mcp-docs-server"],
-      "enabled": true,
-    },
+      "enabled": true
+    }
   },
+  "agent": {
+    "gg": {
+      "description": "Primary GlossGenius development assistant",
+      "mode": "primary",
+      "capabilities": ["planning", "implementation", "analysis", "coordination"]
+    },
+    "ggplan": {
+      "description": "GlossGenius planning and architecture specialist",
+      "mode": "subagent",
+      "capabilities": ["architecture", "requirements", "technical_specs", "migration_planning"]
+    },
+    "ggbuild": {
+      "description": "GlossGenius implementation and build specialist", 
+      "mode": "subagent",
+      "capabilities": ["code_generation", "testing", "deployment", "quality_assurance"]
+    }
+  },
+  "skills": {
+    "core_services": {
+      "path": "~/.config/opencode/skills/gg-core-services-agent",
+      "commands": [
+        "gg-domain-model", "gg-create-store", "gg-create-operations",
+        "gg-client-integration", "gg-testing-suite", "gg-quality-check",
+        "gg-analyze-architecture", "gg-db-migration", "gg-add-dependencies",
+        "gg-feed-integration"
+      ],
+      "supports": ["core-bookings", "core-payments", "core-users", "core-inventory", 
+                   "core-notifications", "core-analytics", "core-integrations"]
+    },
+    "core_bookings_legacy": {
+      "path": "~/.config/opencode/skills/core-bookings-kotlin-agent",
+      "deprecated": true,
+      "replacement": "core_services"
+    }
+  },
+  "tui": {
+    "scroll_acceleration": {
+      "enabled": true
+    }
+  }
 } 

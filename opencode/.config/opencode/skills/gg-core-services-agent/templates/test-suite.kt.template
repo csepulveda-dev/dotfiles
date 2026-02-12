@@ -1,0 +1,314 @@
+package {{TEST_PACKAGE}}
+
+import {{DOMAIN_PACKAGE}}.{{MODEL_NAME}}
+import {{DOMAIN_PACKAGE}}.new{{MODEL_NAME}}RetrievalError
+import {{DOMAIN_PACKAGE}}.newTest{{MODEL_NAME}}
+import {{STORE_PACKAGE}}.converters.{{MODEL_NAME}}Converter
+import com.glossgenius.core.applications.logs.Logger
+import com.glossgenius.core.libs.models.*
+import io.kotest.assertions.throwables.shouldThrow
+import io.kotest.core.spec.style.FreeSpec
+import io.kotest.matchers.shouldBe
+import io.kotest.matchers.shouldNotBe
+import io.mockk.*
+import org.jooq.DSLContext
+import java.time.OffsetDateTime
+import java.util.*
+import {{JOOQ_IMPORTS}}
+
+/**
+ * Test suite for {{MODEL_NAME}}Store using Kotest FreeSpec.
+ */
+class {{MODEL_NAME}}StoreTest : FreeSpec({
+    
+    val mockLogger = mockk<Logger>(relaxed = true)
+    val mockDsl = mockk<DSLContext>()
+    val mockConverter = mockk<{{MODEL_NAME}}Converter>()
+    
+    val {{MODEL_VAR}}Store = {{MODEL_NAME}}StoreImpl(mockLogger, mockDsl, mockConverter)
+    
+    beforeEach {
+        clearAllMocks()
+    }
+    
+    "findByToken" - {
+        val testToken = {{TOKEN_TYPE}}.random()
+        val test{{MODEL_NAME}} = newTest{{MODEL_NAME}}(token = testToken)
+        val mockRecord = mockk<{{RECORD_TYPE}}>()
+        
+        "should return {{MODEL_VAR}} when found" {
+            // Given
+            val mockSelectStep = mockk<SelectWhereStep<{{RECORD_TYPE}}>>()
+            val mockConditionStep = mockk<SelectConditionStep<{{RECORD_TYPE}}>>()
+            
+            every { mockDsl.selectFrom({{TABLE_NAME}}) } returns mockSelectStep
+            every { mockSelectStep.where(any()) } returns mockConditionStep
+            every { mockConditionStep.fetchOne() } returns mockRecord
+            every { mockConverter.fromRecord(mockRecord) } returns test{{MODEL_NAME}}
+            
+            // When
+            val result = {{MODEL_VAR}}Store.findByToken(testToken)
+            
+            // Then
+            result shouldBe test{{MODEL_NAME}}
+            
+            verify { mockDsl.selectFrom({{TABLE_NAME}}) }
+            verify { mockConverter.fromRecord(mockRecord) }
+        }
+        
+        "should return null when not found" {
+            // Given
+            val mockSelectStep = mockk<SelectWhereStep<{{RECORD_TYPE}}>>()
+            val mockConditionStep = mockk<SelectConditionStep<{{RECORD_TYPE}}>>()
+            
+            every { mockDsl.selectFrom({{TABLE_NAME}}) } returns mockSelectStep
+            every { mockSelectStep.where(any()) } returns mockConditionStep
+            every { mockConditionStep.fetchOne() } returns null
+            
+            // When
+            val result = {{MODEL_VAR}}Store.findByToken(testToken)
+            
+            // Then
+            result shouldBe null
+            
+            verify { mockDsl.selectFrom({{TABLE_NAME}}) }
+            verify(exactly = 0) { mockConverter.fromRecord(any()) }
+        }
+        
+        "should throw ServiceException on database error" {
+            // Given
+            val exception = RuntimeException("Database connection failed")
+            every { mockDsl.selectFrom({{TABLE_NAME}}) } throws exception
+            
+            // When & Then
+            val thrownException = shouldThrow<ServiceException> {
+                {{MODEL_VAR}}Store.findByToken(testToken)
+            }
+            
+            thrownException.message shouldBe "Failed to retrieve {{MODEL_VAR}}"
+            thrownException.cause shouldBe exception
+        }
+    }
+    
+    "findByTokens" - {
+        val testTokens = listOf({{TOKEN_TYPE}}.random(), {{TOKEN_TYPE}}.random())
+        val test{{MODEL_NAME}}s = testTokens.map { newTest{{MODEL_NAME}}(token = it) }
+        val mockRecords = test{{MODEL_NAME}}s.map { mockk<{{RECORD_TYPE}}>() }
+        
+        "should return {{MODEL_VAR}}s when found" {
+            // Given
+            val mockSelectStep = mockk<SelectWhereStep<{{RECORD_TYPE}}>>()
+            val mockConditionStep = mockk<SelectConditionStep<{{RECORD_TYPE}}>>()
+            val mockResult = mockk<Result<{{RECORD_TYPE}}>>()
+            
+            every { mockDsl.selectFrom({{TABLE_NAME}}) } returns mockSelectStep
+            every { mockSelectStep.where(any()) } returns mockConditionStep
+            every { mockConditionStep.fetch() } returns mockResult
+            every { mockResult.map<{{MODEL_NAME}}>(any()) } returns test{{MODEL_NAME}}s
+            
+            test{{MODEL_NAME}}s.forEachIndexed { index, {{MODEL_VAR}} ->
+                every { mockConverter.fromRecord(mockRecords[index]) } returns {{MODEL_VAR}}
+            }
+            
+            // When
+            val result = {{MODEL_VAR}}Store.findByTokens(testTokens)
+            
+            // Then
+            result shouldBe test{{MODEL_NAME}}s
+        }
+        
+        "should return empty list when tokens list is empty" {
+            // When
+            val result = {{MODEL_VAR}}Store.findByTokens(emptyList())
+            
+            // Then
+            result shouldBe emptyList()
+            
+            verify(exactly = 0) { mockDsl.selectFrom(any()) }
+        }
+    }
+    
+    "create" - {
+        val test{{MODEL_NAME}} = newTest{{MODEL_NAME}}(nullableToken = null)
+        val mockRecord = mockk<{{RECORD_TYPE}}>()
+        
+        "should create {{MODEL_VAR}} successfully" {
+            // Given
+            val mockInsertStep = mockk<InsertSetStep<{{RECORD_TYPE}}>>()
+            val mockInsertMoreStep = mockk<InsertSetMoreStep<{{RECORD_TYPE}}>>()
+            
+            every { mockConverter.toRecord(any()) } returns mockRecord
+            every { mockDsl.insertInto({{TABLE_NAME}}) } returns mockInsertStep
+            every { mockInsertStep.set(mockRecord) } returns mockInsertMoreStep
+            every { mockInsertMoreStep.execute() } returns 1
+            
+            // When
+            val result = {{MODEL_VAR}}Store.create(test{{MODEL_NAME}})
+            
+            // Then
+            result.token shouldNotBe null
+            result.createdAt shouldNotBe null
+            result.updatedAt shouldNotBe null
+            result.businessToken shouldBe test{{MODEL_NAME}}.businessToken
+            
+            verify { mockConverter.toRecord(any()) }
+            verify { mockDsl.insertInto({{TABLE_NAME}}) }
+        }
+        
+        "should throw ServiceException on creation failure" {
+            // Given
+            val exception = RuntimeException("Constraint violation")
+            every { mockConverter.toRecord(any()) } returns mockRecord
+            every { mockDsl.insertInto({{TABLE_NAME}}) } throws exception
+            
+            // When & Then
+            val thrownException = shouldThrow<ServiceException> {
+                {{MODEL_VAR}}Store.create(test{{MODEL_NAME}})
+            }
+            
+            thrownException.message shouldBe "Failed to create {{MODEL_VAR}}"
+            thrownException.cause shouldBe exception
+        }
+    }
+    
+    "update" - {
+        val test{{MODEL_NAME}} = newTest{{MODEL_NAME}}()
+        val mockRecord = mockk<{{RECORD_TYPE}}>()
+        
+        "should update {{MODEL_VAR}} successfully" {
+            // Given
+            val mockUpdateStep = mockk<UpdateSetFirstStep<{{RECORD_TYPE}}>>()
+            val mockUpdateMoreStep = mockk<UpdateSetMoreStep<{{RECORD_TYPE}}>>()
+            val mockUpdateConditionStep = mockk<UpdateConditionStep<{{RECORD_TYPE}}>>()
+            
+            every { mockConverter.toRecord(any()) } returns mockRecord
+            every { mockDsl.update({{TABLE_NAME}}) } returns mockUpdateStep
+            every { mockUpdateStep.set(mockRecord) } returns mockUpdateMoreStep
+            every { mockUpdateMoreStep.where(any()) } returns mockUpdateConditionStep
+            every { mockUpdateConditionStep.execute() } returns 1
+            
+            // When
+            val result = {{MODEL_VAR}}Store.update(test{{MODEL_NAME}})
+            
+            // Then
+            result.updatedAt shouldNotBe test{{MODEL_NAME}}.updatedAt
+            result.token shouldBe test{{MODEL_NAME}}.token
+            
+            verify { mockConverter.toRecord(any()) }
+            verify { mockDsl.update({{TABLE_NAME}}) }
+        }
+        
+        "should throw ServiceException when {{MODEL_VAR}} not found" {
+            // Given
+            val mockUpdateStep = mockk<UpdateSetFirstStep<{{RECORD_TYPE}}>>()
+            val mockUpdateMoreStep = mockk<UpdateSetMoreStep<{{RECORD_TYPE}}>>()
+            val mockUpdateConditionStep = mockk<UpdateConditionStep<{{RECORD_TYPE}}>>()
+            
+            every { mockConverter.toRecord(any()) } returns mockRecord
+            every { mockDsl.update({{TABLE_NAME}}) } returns mockUpdateStep
+            every { mockUpdateStep.set(mockRecord) } returns mockUpdateMoreStep
+            every { mockUpdateMoreStep.where(any()) } returns mockUpdateConditionStep
+            every { mockUpdateConditionStep.execute() } returns 0
+            
+            // When & Then
+            val thrownException = shouldThrow<ServiceException> {
+                {{MODEL_VAR}}Store.update(test{{MODEL_NAME}})
+            }
+            
+            thrownException.message shouldBe "{{MODEL_NAME}} not found for update"
+        }
+    }
+    
+    "delete" - {
+        val testToken = {{TOKEN_TYPE}}.random()
+        
+        "should delete {{MODEL_VAR}} successfully" {
+            // Given
+            val mockDeleteStep = mockk<DeleteWhereStep<{{RECORD_TYPE}}>>()
+            val mockDeleteConditionStep = mockk<DeleteConditionStep<{{RECORD_TYPE}}>>()
+            
+            every { mockDsl.deleteFrom({{TABLE_NAME}}) } returns mockDeleteStep
+            every { mockDeleteStep.where(any()) } returns mockDeleteConditionStep
+            every { mockDeleteConditionStep.execute() } returns 1
+            
+            // When
+            val result = {{MODEL_VAR}}Store.delete(testToken)
+            
+            // Then
+            result shouldBe true
+            
+            verify { mockDsl.deleteFrom({{TABLE_NAME}}) }
+        }
+        
+        "should return false when {{MODEL_VAR}} not found" {
+            // Given
+            val mockDeleteStep = mockk<DeleteWhereStep<{{RECORD_TYPE}}>>()
+            val mockDeleteConditionStep = mockk<DeleteConditionStep<{{RECORD_TYPE}}>>()
+            
+            every { mockDsl.deleteFrom({{TABLE_NAME}}) } returns mockDeleteStep
+            every { mockDeleteStep.where(any()) } returns mockDeleteConditionStep
+            every { mockDeleteConditionStep.execute() } returns 0
+            
+            // When
+            val result = {{MODEL_VAR}}Store.delete(testToken)
+            
+            // Then
+            result shouldBe false
+        }
+        
+        "should throw ServiceException on deletion failure" {
+            // Given
+            val exception = RuntimeException("Database error")
+            every { mockDsl.deleteFrom({{TABLE_NAME}}) } throws exception
+            
+            // When & Then
+            val thrownException = shouldThrow<ServiceException> {
+                {{MODEL_VAR}}Store.delete(testToken)
+            }
+            
+            thrownException.message shouldBe "Failed to delete {{MODEL_VAR}}"
+            thrownException.cause shouldBe exception
+        }
+    }
+    
+    {{#GUID_TESTS}}
+    "findByGuid" - {
+        val testGuid = UUID.randomUUID()
+        val test{{MODEL_NAME}} = newTest{{MODEL_NAME}}(guid = testGuid)
+        val mockRecord = mockk<{{RECORD_TYPE}}>()
+        
+        "should return {{MODEL_VAR}} when found by GUID" {
+            // Given
+            val mockSelectStep = mockk<SelectWhereStep<{{RECORD_TYPE}}>>()
+            val mockConditionStep = mockk<SelectConditionStep<{{RECORD_TYPE}}>>()
+            
+            every { mockDsl.selectFrom({{TABLE_NAME}}) } returns mockSelectStep
+            every { mockSelectStep.where(any()) } returns mockConditionStep
+            every { mockConditionStep.fetchOne() } returns mockRecord
+            every { mockConverter.fromRecord(mockRecord) } returns test{{MODEL_NAME}}
+            
+            // When
+            val result = {{MODEL_VAR}}Store.findByGuid(testGuid)
+            
+            // Then
+            result shouldBe test{{MODEL_NAME}}
+        }
+        
+        "should return null when not found by GUID" {
+            // Given
+            val mockSelectStep = mockk<SelectWhereStep<{{RECORD_TYPE}}>>()
+            val mockConditionStep = mockk<SelectConditionStep<{{RECORD_TYPE}}>>()
+            
+            every { mockDsl.selectFrom({{TABLE_NAME}}) } returns mockSelectStep
+            every { mockSelectStep.where(any()) } returns mockConditionStep
+            every { mockConditionStep.fetchOne() } returns null
+            
+            // When
+            val result = {{MODEL_VAR}}Store.findByGuid(testGuid)
+            
+            // Then
+            result shouldBe null
+        }
+    }
+    {{/GUID_TESTS}}
+})

@@ -18,3 +18,6 @@ end
 
 set -x NVM_DIR ~/.nvm
 nvm use default --silent
+
+# peon-ping quick controls
+function peon; bash /Users/csepulveda-gg/.claude/hooks/peon-ping/peon.sh $argv; end
