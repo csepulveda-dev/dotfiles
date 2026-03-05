@@ -6,6 +6,7 @@ init = ["git", "init", "--colocate"]
 adv = ["bookmark", "set", "-r", "@-"]
 push = ["git", "push", "--bookmark"]
 fetch = ["git", "fetch"]
+main = ["bookmark", "set", "main", "-r", "main@origin"]
 sq = ["squash"]
 cp = ["sq --from"]
 
@@ -19,3 +20,7 @@ backend = "ssh"
 key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEW9T85LXPunfIBv79rYQQfTarydQs2k+ko8Njsryun3"
 backends.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
 backends.ssh.allowed-signers = "/Users/csepulveda-gg/.ssh/allowed_signers"
+
+[remotes.origin]
+auto-track-created-bookmarks = "EN-* | NO-TASK* | SCH-*"
+auto-track-bookmarks = "main"

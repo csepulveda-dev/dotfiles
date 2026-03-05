@@ -56,17 +56,17 @@
     }
   },
   "command": {
-    "speckit.gg-specify":      { "template": "~/.config/opencode/agents/speckit.gg-specify.md",      "agent": "ggspec"   },
-    "speckit.gg-clarify":      { "template": "~/.config/opencode/agents/speckit.gg-clarify.md",      "agent": "ggspec"   },
-    "speckit.gg-plan":         { "template": "~/.config/opencode/agents/speckit.gg-plan.md",         "agent": "ggspec"   },
-    "speckit.gg-tasks":        { "template": "~/.config/opencode/agents/speckit.gg-tasks.md",        "agent": "ggspec"   },
-    "speckit.gg-checklist":    { "template": "~/.config/opencode/agents/speckit.gg-checklist.md",    "agent": "ggspec"   },
-    "speckit.gg-analyze":      { "template": "~/.config/opencode/agents/speckit.gg-analyze.md",      "agent": "ggspec"   },
-    "speckit.gg-constitution": { "template": "~/.config/opencode/agents/speckit.gg-constitution.md", "agent": "ggspec"   },
-    "speckit.gg-init":         { "template": "~/.config/opencode/agents/speckit.gg-init.md",         "agent": "ggspec"   },
-    "speckit.gg-taskstoissues":{ "template": "~/.config/opencode/agents/speckit.gg-taskstoissues.md","agent": "ggspec"   },
-    "speckit.gg-implement":    { "template": "~/.config/opencode/agents/speckit.gg-implement.md",    "agent": "ggbuild"  },
-    "speckit.gg-revise":       { "template": "~/.config/opencode/agents/speckit.gg-revise.md",       "agent": "ggbuild"  }
+    "speckit.gg-specify":     { "agent": "ggspec" },
+    "speckit.gg-clarify":     { "agent": "ggspec" },
+    "speckit.gg-plan":        { "agent": "ggspec" },
+    "speckit.gg-tasks":       { "agent": "ggspec" },
+    "speckit.gg-checklist":   { "agent": "ggspec" },
+    "speckit.gg-analyze":     { "agent": "ggspec" },
+    "speckit.gg-constitution":{ "agent": "ggspec" },
+    "speckit.gg-init":        { "agent": "ggspec" },
+    "speckit.gg-taskstoissues":{ "agent": "ggspec" },
+    "speckit.gg-implement":   { "agent": "ggbuild" },
+    "speckit.gg-revise":      { "agent": "ggbuild" }
   },
   "skills": {
     "core_services": {
@@ -84,6 +84,11 @@
       "path": "~/.config/opencode/skills/core-bookings-kotlin-agent",
       "deprecated": true,
       "replacement": "core_services"
+    }
+  },
+  "tui": {
+    "scroll_acceleration": {
+      "enabled": true
     }
   }
 }

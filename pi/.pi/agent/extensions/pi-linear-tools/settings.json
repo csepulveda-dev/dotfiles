@@ -1,0 +1,15 @@
+{
+  "schemaVersion": 2,
+  "authMethod": "api-key",
+  "apiKey": "",
+  "oauth": {
+    "clientId": "a3e177176c6697611367f1a2405d4a34",
+    "redirectUri": "http://localhost:34711/callback"
+  },
+  "defaultTeam": "SCH",
+  "defaultWorkspace": {
+    "id": "5d9ae814-e0f0-4d03-b8ab-8b3bb0e54db4",
+    "name": "GlossGenius"
+  },
+  "projects": {}
+}

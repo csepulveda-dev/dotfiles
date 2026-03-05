@@ -1,3 +1,3 @@
-function !corepayrolls --wraps='cd ~/Developer/core-payrolls' --description 'alias !corepayrolls=cd ~/Developer/core-payrolls'
-    cd ~/Developer/core-payrolls $argv
+function !corepayrolls --wraps='cd ~/Developer/glossgenius/core-payrolls' --description 'alias !corepayrolls=cd ~/Developer/glossgenius/core-payrolls'
+    cd ~/Developer/glossgenius/core-payrolls $argv
 end

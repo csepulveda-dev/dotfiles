@@ -1,0 +1,38 @@
+{
+  "version": 1,
+  "providers": {
+    "anthropic": {
+      "provider": "anthropic",
+      "windows": [
+        {
+          "label": "5-hour",
+          "percentLeft": 98,
+          "resetDescription": "in 4h49m",
+          "windowMinutes": 300
+        },
+        {
+          "label": "7-day",
+          "percentLeft": 91,
+          "resetDescription": "in 24h49m",
+          "windowMinutes": 10080
+        }
+      ],
+      "credits": null,
+      "account": null,
+      "plan": "OAuth",
+      "note": null,
+      "probedAt": 1776881454366,
+      "error": null
+    },
+    "openai": {
+      "provider": "openai",
+      "windows": [],
+      "credits": null,
+      "account": null,
+      "plan": null,
+      "note": "No pi auth configured for OpenAI — run pi login.",
+      "probedAt": 1776437806376,
+      "error": null
+    }
+  }
+}

@@ -1,14 +1,6 @@
 "$schema" = 'https://starship.rs/config-schema.json'
 
-format = '$directory${custom.jj}$character'
-
-[custom.jj]
-command = "prompt"
-format = "$output"
-ignore_timeout = true
-shell = ["starship-jj", "--ignore-working-copy", "starship"]
-use_stdin = false
-when = true
+format = 'asdasdasdasdas'
 
 [aws]
 format = '\[[$symbol($profile)(\($region\))(\[$duration\])]($style)\]'
@@ -134,7 +126,8 @@ format = '\[[$symbol$branch]($style)\]'
 format = '\[[$ssh_symbol($hostname)]($style)\] '
 
 [java]
-format = '\[[$symbol($version)]($style)\]'
+# format = '\[[$symbol($version)]($style)\]'
+disabled = true
 
 [jobs]
 format = '\[[$symbol$number]($style)\]'
@@ -198,6 +191,7 @@ format = '\[[$symbol]($style)\]'
 
 [package]
 format = '\[[$symbol$version]($style)\]'
+disable = true
 
 [perl]
 format = '\[[$symbol($version)]($style)\]'

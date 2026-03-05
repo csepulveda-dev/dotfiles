@@ -1,0 +1,11 @@
+#:schema https://docs.jj-vcs.dev/latest/config-schema.json
+
+[revset-aliases]
+"trunk()" = "main@origin"
+
+[user]
+name = "csepulveda-dev"
+email = "github@accounts.camilosep.com"
+
+[snapshot]
+max-new-file-size = 2000000

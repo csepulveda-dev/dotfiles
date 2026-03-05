@@ -1,0 +1,17 @@
+{
+  "lastChangelogVersion": "0.67.68",
+  "defaultProvider": "anthropic",
+  "defaultModel": "claude-sonnet-4-5",
+  "defaultThinkingLevel": "medium",
+  "theme": "dark",
+  "packages": [
+    "npm:pi-ghostty",
+    "git:https://github.com/tomsej/pi-ext/tree/main/extensions/session-switch",
+    "npm:pi-plan-mode",
+    "npm:pi-jujutsu",
+    "npm:@ifi/oh-pi-extensions",
+    "../../Developer/oh-pi/packages/spec",
+    "npm:@fink-andreas/pi-linear-tools",
+    "npm:@kaiserlich-dev/pi-session-search"
+  ]
+}
