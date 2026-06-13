@@ -11,16 +11,8 @@ sq = ["squash"]
 cp = ["sq --from"]
 
 [user]
-name = "csepulveda-gg"
-email = "c.sepulveda@appleid.glossgenius.com"
-
-[signing]
-behavior = "own"
-backend = "ssh"
-key = "ssh-ed25519 AAAAC3NzaC1lZDI1NTE5AAAAIEW9T85LXPunfIBv79rYQQfTarydQs2k+ko8Njsryun3"
-backends.ssh.program = "/Applications/1Password.app/Contents/MacOS/op-ssh-sign"
-backends.ssh.allowed-signers = "/Users/csepulveda-gg/.ssh/allowed_signers"
+name = "csepulveda-dev"
+email = "github@accounts.camilosep.com"
 
 [remotes.origin]
-auto-track-created-bookmarks = "EN-* | NO-TASK* | SCH-*"
 auto-track-bookmarks = "main"

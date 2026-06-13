@@ -3,26 +3,13 @@
   "providers": {
     "anthropic": {
       "provider": "anthropic",
-      "windows": [
-        {
-          "label": "5-hour",
-          "percentLeft": 98,
-          "resetDescription": "in 4h49m",
-          "windowMinutes": 300
-        },
-        {
-          "label": "7-day",
-          "percentLeft": 91,
-          "resetDescription": "in 24h49m",
-          "windowMinutes": 10080
-        }
-      ],
+      "windows": [],
       "credits": null,
       "account": null,
-      "plan": "OAuth",
+      "plan": null,
       "note": null,
-      "probedAt": 1776881454366,
-      "error": null
+      "probedAt": 1777301538109,
+      "error": "Anthropic token refresh failed — re-authenticate with pi login."
     },
     "openai": {
       "provider": "openai",

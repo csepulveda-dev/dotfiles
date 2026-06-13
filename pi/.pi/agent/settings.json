@@ -1,17 +1,37 @@
 {
-  "lastChangelogVersion": "0.67.68",
+  "lastChangelogVersion": "0.74.1",
   "defaultProvider": "anthropic",
-  "defaultModel": "claude-sonnet-4-5",
+  "defaultModel": "claude-opus-4-6",
   "defaultThinkingLevel": "medium",
   "theme": "dark",
   "packages": [
     "npm:pi-ghostty",
-    "git:https://github.com/tomsej/pi-ext/tree/main/extensions/session-switch",
     "npm:pi-plan-mode",
     "npm:pi-jujutsu",
-    "npm:@ifi/oh-pi-extensions",
-    "../../Developer/oh-pi/packages/spec",
-    "npm:@fink-andreas/pi-linear-tools",
-    "npm:@kaiserlich-dev/pi-session-search"
-  ]
+    "~/Developer/my-pi-extensions/spec",
+    "npm:pi-extmgr",
+    "npm:context-mode",
+    "npm:pi-mcp-adapter",
+    "npm:pi-powerline-footer",
+    "git:github.com/nicobailon/visual-explainer",
+    "npm:@juicesharp/rpiv-pi",
+    "npm:@tintinweb/pi-subagents",
+    "npm:@juicesharp/rpiv-ask-user-question",
+    "npm:@juicesharp/rpiv-todo",
+    "npm:@juicesharp/rpiv-advisor",
+    "npm:@juicesharp/rpiv-i18n",
+    "npm:@juicesharp/rpiv-web-tools",
+    "npm:@juicesharp/rpiv-args",
+    "../../Developer/my-pi-extensions/artifact-sync"
+  ],
+  "powerline": {
+    "preset": "default",
+    "customItems": [
+      {
+        "id": "jujutsu",
+        "status": "jj",
+        "position": "secondary"
+      }
+    ]
+  }
 }

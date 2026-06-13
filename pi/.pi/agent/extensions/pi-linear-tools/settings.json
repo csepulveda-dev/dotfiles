@@ -1,7 +1,7 @@
 {
   "schemaVersion": 2,
   "authMethod": "api-key",
-  "apiKey": "",
+  "apiKey": "lin_api_51MnlcULESXN2VhdJ3hU5VGX4SOgPEGBw5caknH1",
   "oauth": {
     "clientId": "a3e177176c6697611367f1a2405d4a34",
     "redirectUri": "http://localhost:34711/callback"
